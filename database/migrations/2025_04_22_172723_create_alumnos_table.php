@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('Nombre', 50);
             $table->string('AP', 40);
             $table->string('AM', 40);
-            $table->integer('CURP');
+            $table->string('CURP',18)->unique();
             $table->date('FIG');
             $table->date('FTG')->nullable();
             $table->timestamps();

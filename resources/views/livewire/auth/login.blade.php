@@ -25,22 +25,33 @@ new #[Layout('components.layouts.auth')] class extends Component {
      */
     public function login(): void
     {
-        $this->validate();
-
-        $this->ensureIsNotRateLimited();
-
-        if (! Auth::attempt(['email' => $this->email, 'password' => $this->password], $this->remember)) {
-            RateLimiter::hit($this->throttleKey());
-
-            throw ValidationException::withMessages([
-                'email' => __('auth.failed'),
-            ]);
-        }
-
-        RateLimiter::clear($this->throttleKey());
-        Session::regenerate();
-
-        $this->redirectIntended(default: route('dashboard', absolute: false), navigate: true);
+        
+            $this->validate();
+        
+            $this->ensureIsNotRateLimited();
+        
+            if (! Auth::attempt(['email' => $this->email, 'password' => $this->password], $this->remember)) {
+                RateLimiter::hit($this->throttleKey());
+        
+                throw ValidationException::withMessages([
+                    'email' => __('auth.failed'),
+                ]);
+            }
+        
+            RateLimiter::clear($this->throttleKey());
+            Session::regenerate();
+        
+            $user = Auth::user();
+        
+            // Redirección según el ROL
+            if ($user->ROL === 'M') {
+                $this->redirect(route('maestro.dashboard'), navigate: true);
+            } elseif ($user->ROL === 'A') {
+                $this->redirect(route('alumno.dashboard'), navigate: true);
+            } else {
+                $this->redirect(route('administracion.dashboard'), navigate: true); // Fallback por si acaso
+            }
+        
     }
 
     /**
@@ -74,7 +85,13 @@ new #[Layout('components.layouts.auth')] class extends Component {
 }; ?>
 
 <div class="flex flex-col gap-6">
-    <x-auth-header :title="__('Log in to your account')" :description="__('Enter your email and password below to log in')" />
+    @if (session('success'))
+        <div class="flex rounded-4xl bg-green-100 text-green-800 p-4 mb-4" id="notification">
+             <p class="flex-9">{{ session('success') }}</p>
+             <flux:button variant="primary" onclick="closeNotification()" class="felx-1" icon="x-mark"></flux:button>
+        </div>
+@endif
+    <x-auth-header :title="('Log in to your account')" :description="('Enter your email and password below to log in')" />
 
     <!-- Session Status -->
     <x-auth-session-status class="text-center" :status="session('status')" />
@@ -83,7 +100,7 @@ new #[Layout('components.layouts.auth')] class extends Component {
         <!-- Email Address -->
         <flux:input
             wire:model="email"
-            :label="__('Email address')"
+            :label="('Email address')"
             type="email"
             required
             autofocus
@@ -95,11 +112,11 @@ new #[Layout('components.layouts.auth')] class extends Component {
         <div class="relative">
             <flux:input
                 wire:model="password"
-                :label="__('Password')"
+                :label="('Password')"
                 type="password"
                 required
                 autocomplete="current-password"
-                :placeholder="__('Password')"
+                :placeholder="('Password')"
             />
 
             @if (Route::has('password.request'))
@@ -110,17 +127,17 @@ new #[Layout('components.layouts.auth')] class extends Component {
         </div>
 
         <!-- Remember Me -->
-        <flux:checkbox wire:model="remember" :label="__('Remember me')" />
+        <flux:checkbox wire:model="remember" :label="('Remember me')" />
 
         <div class="flex items-center justify-end">
             <flux:button variant="primary" type="submit" class="w-full">{{ __('Log in') }}</flux:button>
         </div>
     </form>
 
-    @if (Route::has('register'))
-        <div class="space-x-1 rtl:space-x-reverse text-center text-sm text-zinc-600 dark:text-zinc-400">
-            {{ __('Don\'t have an account?') }}
-            <flux:link :href="route('register')" wire:navigate>{{ __('Sign up') }}</flux:link>
-        </div>
-    @endif
+ 
+    <script>
+        function closeNotification() {
+            document.getElementById('notification').style.display = 'none';
+        }
+    </script>
 </div>

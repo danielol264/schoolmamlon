@@ -23,6 +23,7 @@ return new class extends Migration
             $table->unsignedBigInteger('id_maestro')->nullable();
             $table->foreign('id_alumno')->references('id')->on('alumnos')->onDelete('cascade');
             $table->foreign('id_maestro')->references('id')->on('maestros')->onDelete('cascade');
+            $table->foreign('id_grupo')->references('id')->on('grupos')->onDelete('cascade');
             $table->rememberToken();
             $table->timestamps();
 

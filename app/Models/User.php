@@ -22,6 +22,10 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'ROL',
+    'id_grupo',
+    'id_alumno',
+    'id_maestro'
     ];
 
     /**
@@ -57,4 +61,19 @@ class User extends Authenticatable
             ->map(fn (string $name) => Str::of($name)->substr(0, 1))
             ->implode('');
     }
+
+    public function grupo()
+{
+    return $this->belongsTo(Grupo::class, 'id_grupo');
+}
+
+public function alumno()
+{
+    return $this->belongsTo(Alumno::class, 'id_alumno');
+}
+
+public function maestro()
+{
+    return $this->belongsTo(Maestro::class, 'id_maestro');
+}
 }
