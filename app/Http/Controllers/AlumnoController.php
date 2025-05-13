@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\alumno;
 use Illuminate\Http\Request;
 
+
 class AlumnoController extends Controller
 {
     /**
@@ -36,7 +37,17 @@ class AlumnoController extends Controller
      */
     public function show(alumno $alumno)
     {
-        //
+         $grupos=grupo::all(); 
+       $examen=examenes::findorfail($id);
+       $grupo=grupoExamen::where('id_examen',$examen->id)->first();
+       $preguntas=preguntas::where('id_examen',$examen->id)->get();
+       $respuestas=[];
+         foreach ($preguntas as $pregunta) {
+                $respuestas[$pregunta->id] = respuestas::where('id_pregunta', $pregunta->id)->get();
+          }
+        
+    return view('maestro.examenes.show',["examen"=>$examen,"grupo"=>$grupo,"grupos"=>$grupos,"preguntas"=>$preguntas,"respuestas"=>$respuestas]);
+
     }
 
     /**
@@ -62,4 +73,5 @@ class AlumnoController extends Controller
     {
         //
     }
+    
 }

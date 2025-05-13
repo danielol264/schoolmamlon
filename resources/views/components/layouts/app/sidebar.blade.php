@@ -11,13 +11,24 @@
                 <x-app-logo />
             </a>
 
-            <flux:navlist variant="outline">
-                <flux:navlist.group :heading="__('Platform')" class="grid">
-                    <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Dashboard') }}</flux:navlist.item>
-                </flux:navlist.group>
+           <flux:navlist variant="outline">
+                @if (auth()->user()->ROL==='A')
+                    <flux:navlist.group :heading="('Moviementos')" class="grid">
+                        <flux:navlist.item icon="home" :href="route('alumno.dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('informacion Personal') }}</flux:navlist.item>
+                    </flux:navlist.group>
+                   
+                @elseif (auth()->user()->ROL==='M')
+                    <flux:navlist.group :heading="('Operaciones')" class="grid">
+                    <flux:navlist.item icon="home" :href="route('maestro.dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Menu') }}</flux:navlist.item>
+                    </flux:navlist.group>
+                @else
+                    <flux:navlist.group :heading="('Operaciones')" class="grid">
+                    <flux:navlist.item icon="home" :href="route('administracion.dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Menu') }}</flux:navlist.item>
+                    </flux:navlist.group>
+                @endif
             </flux:navlist>
 
-            <flux:spacer />
+           
 
             <flux:navlist variant="outline">
                 <flux:navlist.item icon="folder-git-2" href="https://github.com/laravel/livewire-starter-kit" target="_blank">
