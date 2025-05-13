@@ -60,6 +60,13 @@ class PreguntasController extends Controller
      */
     public function destroy(preguntas $preguntas)
     {
-        //
+        dd($preguntas->all());
+        try{
+            $preguntas->delete();
+            return redirect()->route('examenes.show', $preguntas->id_examen)->with('success', 'Pregunta eliminada correctamente');
+        }catch(\Exception $e){
+            return redirect()->route('examenes.show', $preguntas->id_examen)->with('error', 'Pregunta eliminada correctamente');
+
+        }
     }
 }

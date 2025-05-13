@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('examenes', function (Blueprint $table) {
             $table->id();
             $table->string('Nombre', 50);
-            $table->unsignedBigInteger('id_user');
+            $table->unsignedBigInteger('id_maestro');
             $table->timestamps();
-            $table->foreign('id_user')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('id_maestro')->references('id')->on('maestros')->onDelete('cascade');
         });
     }
 
