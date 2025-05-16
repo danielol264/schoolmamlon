@@ -6,8 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class grupoExamen extends Model
 {
-    public function examenes(){
-        return $this->belongsToMany(examenes::class);
+    // app/Models/GrupoExamen.php
+public function examen()
+    {
+        return $this->belongsTo(examenes::class, 'id_examen'); // Filtro adicional por si acaso
     }
     public function grupos(){
         return $this->belongsToMany(grupo::class);

@@ -19,5 +19,9 @@ class grupo extends Model
 {
     return $this->belongsToMany(Examenes::class, 'grupo_examens', 'id_grupo', 'id_examen');
 }
+    public function user()
+    {
+        return $this->hasOne(User::class, 'id_grupo');
+    }
 
 }

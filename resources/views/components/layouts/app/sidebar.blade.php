@@ -23,7 +23,8 @@
                    
                 @elseif (auth()->user()->ROL==='A')
                     <flux:navlist.group :heading="__('Operaciones')" class="grid">
-                    <flux:navlist.item icon="home" :href="route('alumno.dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Menu') }}</flux:navlist.item>
+                    <flux:navlist.item icon="home" :href="route('alumno.dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Informacion personal') }}</flux:navlist.item>
+                    <flux:navlist.item icon="clipboard-document-list" :href="route('alumno.examen')" :current="request()->routeIs('examenes.*')" wire:navigate>{{ __('Examenes') }}</flux:navlist.item>
                     </flux:navlist.group>
                 @else
                     <flux:navlist.group :heading="__('Operaciones')" class="grid">

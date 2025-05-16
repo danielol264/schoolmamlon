@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\calificaciones;
 use App\Models\examenes;
 use App\Models\grupo;
 use App\Models\preguntas;
@@ -22,9 +23,43 @@ class ExamenesController extends Controller
         return view('maestro.examenes.index' ,["examenes"=>$examenes]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+    public function responder(examenes $examenes){ 
+        $examen=$examenes;
+        $grupo=grupoExamen::where('id_examen',$examen->id)->first();
+        $preguntas=preguntas::where('id_examen',$examen->id)->get();
+        $respuestas=[];
+         foreach ($preguntas as $pregunta) {
+                $respuestas[$pregunta->id] = respuestas::where('id_pregunta', $pregunta->id)->where('id_maestro',$examen->id_maestro)->get();
+          }
+        return view('alumno.responder',["examen"=>$examenes,"grupo"=>$grupo,"preguntas"=>$preguntas,"respuestas"=>$respuestas]);
+    }
+    public function enviar(Request $request){
+        $cantidadPreguntas=0;
+        $preguntasCorrectas=0;
+        $calificacion=0;
+        try{
+            foreach ($request->respuestas as $preguntaId => $valorRespuesta) {
+                $respuesta= new respuestas();
+                $respuesta->id_alumno=$request->alumno_id;
+                $respuesta->id_pregunta=$preguntaId;
+                $respuesta->respuesta=$valorRespuesta;
+                $respuesta->save();
+                $cantidadPreguntas++;
+                $preguntas=preguntas::where('id_pregunta',$preguntaId)->get();
+                $preguntas->respuestacrt==$valorRespuesta ? $preguntasCorrectas++ : null ;
+            }
+            $calificacionTotal=($preguntasCorrectas*10)/$cantidadPreguntas; 
+            $califcacion=new calificaciones();
+            $califcacion->calificacion=$calificacionTotal;
+            $califcacion->id_examen=$request->examen_id;
+            $califcacion->id_alumno=$request->alumno_id;
+            $califcacion->save();
+        }  
+        catch(\Exception $e){
+
+        }
+        return redirect()->route('alumno.examen');
+    }
     public function create(Request $Request)
     {
         $grupos=grupo::where("id_maestro", "=", $Request->maestro)->get();
@@ -100,7 +135,7 @@ class ExamenesController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show( $id)
+    public function show($id)
     {
        $grupos=grupo::all(); 
        $examen=examenes::findorfail($id);
@@ -108,7 +143,7 @@ class ExamenesController extends Controller
        $preguntas=preguntas::where('id_examen',$examen->id)->get();
        $respuestas=[];
          foreach ($preguntas as $pregunta) {
-                $respuestas[$pregunta->id] = respuestas::where('id_pregunta', $pregunta->id)->get();
+                $respuestas[$pregunta->id] = respuestas::where('id_pregunta', $pregunta->id)->where('id_maestro',$examen->id_maestro)->get();
           }
         
     return view('maestro.examenes.show',["examen"=>$examen,"grupo"=>$grupo,"grupos"=>$grupos,"preguntas"=>$preguntas,"respuestas"=>$respuestas]);
@@ -125,7 +160,7 @@ class ExamenesController extends Controller
         $preguntas=preguntas::where('id_examen',$examen->id)->get();
         $respuestas=[];
         foreach ($preguntas as $pregunta) {
-                $respuestas[$pregunta->id] = respuestas::where('id_pregunta', $pregunta->id)->get();
+                $respuestas[$pregunta->id] = respuestas::where('id_pregunta', $pregunta->id)->where('id_maestro',$examen->id_maestro)->get();
         }
         
         return view('maestro.examenes.edit',["examen"=>$examen,"grupo"=>$grupo,"grupos"=>$grupos,"preguntas"=>$preguntas,"respuestas"=>$respuestas]);

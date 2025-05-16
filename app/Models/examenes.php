@@ -15,4 +15,7 @@ public function grupos()
 {
     return $this->belongsToMany(Grupo::class, 'grupo_examens', 'id_examen', 'id_grupo');
 }
+public function grupoexamen(){
+    return $this->hasOne(grupoExamen::class, 'id_examen');
+}
 }
