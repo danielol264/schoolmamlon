@@ -25,10 +25,14 @@
                     <flux:navlist.group :heading="__('Operaciones')" class="grid">
                     <flux:navlist.item icon="home" :href="route('alumno.dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Informacion personal') }}</flux:navlist.item>
                     <flux:navlist.item icon="clipboard-document-list" :href="route('alumno.examen')" :current="request()->routeIs('examenes.*')" wire:navigate>{{ __('Examenes') }}</flux:navlist.item>
+                    <flux:navlist.item icon="check-badge" :href="route('alumno.calificaciones')" :current="request()->routeIs('calificaciones.*')" wire:navigate>{{ __('Calificaciones') }}</flux:navlist.item>
                     </flux:navlist.group>
                 @else
-                    <flux:navlist.group :heading="__('Operaciones')" class="grid">
+                    <flux:navlist.group :heading="('Operaciones')" class="grid">
                     <flux:navlist.item icon="home" :href="route('administracion.dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Menu') }}</flux:navlist.item>
+                    <flux:navlist.item icon="home" :href="route('administracion.alumnos.index')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Alumnos') }}</flux:navlist.item>
+                    <flux:navlist.item icon="home" :href="route('administracion.maestros.index')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Maestros') }}</flux:navlist.item>
+                    <flux:navlist.item icon="home" :href="route('administracion.grupos.index')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Grupos') }}</flux:navlist.item>
                     </flux:navlist.group>
                 @endif
             </flux:navlist>

@@ -1,6 +1,18 @@
     <x-layouts.app :title="__('Dashboard')">
         <div class="flex h-full w-full flex-1 flex-col gap-4 rounded-xl">
+            
             <div class="grid auto-rows-min h-40 gap-4 ">
+                @if($grupo->activo != 1)
+                <form action="{{route('examenes.activar',$grupo)}}" method="post">
+                    @csrf
+                <button type="submit">Activar examen</button>
+                </form>
+                @else
+                <form action="{{route('examenes.desactivar',$grupo)}}" method="post">
+                    @csrf
+                <button type="submit">Desactivar examen</button>
+                </form>
+                @endif
                 <div class="relative aspect-video overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700">
                     <flux:input label="Nombre del examen" value="{{ $examen->Nombre }}" disabled/>
                     <flux:select disabled>
@@ -67,5 +79,6 @@
                     @endforeach
                     
             </div>
+            
         </div>
     </x-layouts.app>

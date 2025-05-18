@@ -6,7 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class grupo extends Model
 {
-    //
+    protected $fillable = [
+        'Nombre',
+        'id_maestro'
+    ];
    public function alumnos()
     {
         return $this->hasMany(User::class, 'id_grupo')->where('ROL', 'A');
@@ -23,5 +26,7 @@ class grupo extends Model
     {
         return $this->hasOne(User::class, 'id_grupo');
     }
-
+    public function grupoexamen(){
+    return $this->hasOne(grupoExamen::class, 'id_grupo');
+}
 }

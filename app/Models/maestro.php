@@ -6,7 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class maestro extends Model
 {
-    //
+
+    protected $fillable = [
+        'nombre',
+        'AP',
+        'AM',
+        'CEDULA',
+        'FI'
+    ];
         public function user()
     {
         return $this->hasOne(User::class, 'id_maestro');

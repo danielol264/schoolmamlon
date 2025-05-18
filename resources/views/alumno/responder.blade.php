@@ -1,8 +1,9 @@
 <x-layouts.app :title="__('Examen: ').$examen->Nombre">
     <form action="{{route('examenes.enviar')}}" method="POST">
         @csrf
-        <input type="hidden" name="examen_id" value="{{ $examen->id }}">
-        <input type="hidden" name="alumno_id" value="{{ Auth::user()->alumno->id }}">
+        <input class="hidden" name="examen_id" value="{{ $examen->id }}">
+        <input class="hidden" name="alumno_id" value="{{ Auth::user()->alumno->id }}">
+        <input class="hidden" name="grupo_id" value="{{$grupo->id_grupo}}">
         <div class="flex h-full w-full flex-1 flex-col gap-4 rounded-xl">
             <div class="grid auto-rows-min h-40 gap-4">
                     <flux:input label="Nombre del examen" value="{{ $examen->Nombre }}" disabled/>      
@@ -22,7 +23,7 @@
                                     <input type="radio" 
                                            name="respuestas[{{ $pregunta->id }}]" 
                                            id="resp_{{ $pregunta->id }}_{{ $respuesta->id }}" 
-                                           value="{{ $respuesta->id }}" 
+                                           value="{{ $respuesta->respuesta }}" 
                                            class="mr-2">
                                     <label for="resp_{{ $pregunta->id }}_{{ $respuesta->id }}">
                                         {{ $respuesta->respuesta }}
@@ -36,7 +37,7 @@
                                 <input type="radio" 
                                        name="respuestas[{{ $pregunta->id }}]" 
                                        id="resp_{{ $pregunta->id }}_true" 
-                                       value="verdadero" 
+                                       value="true" 
                                        class="mr-2">
                                 <label for="resp_{{ $pregunta->id }}_true">Verdadero</label>
                             </div>
@@ -44,7 +45,7 @@
                                 <input type="radio" 
                                        name="respuestas[{{ $pregunta->id }}]" 
                                        id="resp_{{ $pregunta->id }}_false" 
-                                       value="falso" 
+                                       value="false" 
                                        class="mr-2">
                                 <label for="resp_{{ $pregunta->id }}_false">Falso</label>
                             </div>

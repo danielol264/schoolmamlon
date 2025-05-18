@@ -34,31 +34,57 @@ class ExamenesController extends Controller
         return view('alumno.responder',["examen"=>$examenes,"grupo"=>$grupo,"preguntas"=>$preguntas,"respuestas"=>$respuestas]);
     }
     public function enviar(Request $request){
-        $cantidadPreguntas=0;
         $preguntasCorrectas=0;
-        $calificacion=0;
+        $calificacionTotal=0;
         try{
+            $cantidadPreguntas = preguntas::where('id_examen', $request->examen_id)->count();
             foreach ($request->respuestas as $preguntaId => $valorRespuesta) {
                 $respuesta= new respuestas();
                 $respuesta->id_alumno=$request->alumno_id;
                 $respuesta->id_pregunta=$preguntaId;
                 $respuesta->respuesta=$valorRespuesta;
                 $respuesta->save();
-                $cantidadPreguntas++;
-                $preguntas=preguntas::where('id_pregunta',$preguntaId)->get();
-                $preguntas->respuestacrt==$valorRespuesta ? $preguntasCorrectas++ : null ;
+                $pregunta=preguntas::find($preguntaId);
+                if ($pregunta && $pregunta->respuestacrt == $valorRespuesta) {
+                $preguntasCorrectas++;
             }
-            $calificacionTotal=($preguntasCorrectas*10)/$cantidadPreguntas; 
-            $califcacion=new calificaciones();
-            $califcacion->calificacion=$calificacionTotal;
-            $califcacion->id_examen=$request->examen_id;
-            $califcacion->id_alumno=$request->alumno_id;
-            $califcacion->save();
+        }
+
+            $calificacionTotal = 0;
+        if ($cantidadPreguntas > 0) {
+            $porcentaje = ($preguntasCorrectas * 100.0) / $cantidadPreguntas;
+            $calificacionTotal = (int) round($porcentaje);
+        }
+            $califcaciones=new calificaciones();
+            $califcaciones->calificacion=$calificacionTotal;
+            $califcaciones->id_examen=$request->examen_id;
+            $califcaciones->id_alumno=$request->alumno_id;
+            $califcaciones->save();    
+            session()->flash('success','Examen respondido correctamente');
+        
         }  
         catch(\Exception $e){
-
+            session()->flash('error','No se enviaron las respuestas correctamente, vuelve a intentarlo');
         }
         return redirect()->route('alumno.examen');
+    }
+    public function examen($grupo_id, $examen_id, $alumno_id)
+    {
+        $grupo=grupo::where('id','=',$grupo_id)->first();
+        $examen=examenes::findorfail($examen_id);
+        $grupoEx=grupoExamen::where('id_examen',$examen->id)->first();
+        $preguntas=preguntas::where('id_examen',$examen->id)->get();
+        $respuestas=[];
+         foreach ($preguntas as $pregunta) {
+                $respuestas[$pregunta->id] = respuestas::where('id_pregunta', $pregunta->id)->where('id_maestro',$examen->id_maestro)->get();
+          }
+        $respuestasAlumno=[];
+        foreach ($preguntas as $pregunta) {
+                $respuestasAlumno[$pregunta->id] = respuestas::where('id_pregunta', $pregunta->id)->where('id_alumno',$alumno_id)->get();
+          }
+        $calificaciones=calificaciones::where('id_examen',$examen->id)->where('id_alumno',$alumno_id)->first();
+        return view('maestro.calificaciones.examen',["examen"=>$examen,"grupo"=>$grupo,"gruposEx"=>$grupoEx,"preguntas"=>$preguntas,"respuestas"=>$respuestas,"respuestasAlumno"=>$respuestasAlumno,"calificaciones"=>$calificaciones]);
+
     }
     public function create(Request $Request)
     {
@@ -71,18 +97,30 @@ class ExamenesController extends Controller
      */
     public function store(Request $request)
     {
-           
-       
+    $validated = $request->validate([
+        'nombre' => 'required|string|max:255',
+        'maestro' => 'required|integer|exists:maestros,id',
+        'grupo' => 'required|integer|exists:grupos,id',
+        'preguntas' => 'required|array|min:1',
+        'preguntas.*.texto' => 'required|string|max:500',
+        'preguntas.*.tipo' => 'required|in:o,t,a',
+        'preguntas.*.respuestas' => 'required_if:preguntas.*.tipo,o,t,a',
+        'preguntas.*.correcta' => 'required_if:preguntas.*.tipo,o,t'
+    ]);
+        $cantidadPreguntas=0;
         try { // Añadir esto
         $examen=new examenes();
         $examen->nombre=$request->nombre;
         $examen->id_maestro=$request->maestro;
+        $examen->cantidadPreguntas=0;
         $examen->save();
         $examengrupo= new grupoExamen();
         $examengrupo->id_examen=$examen->id;
         $examengrupo->id_grupo=$request->grupo;
+        $examengrupo->activo=0;
         $examengrupo->save();
         foreach ($request->preguntas as $preguntaData) {
+                $cantidadPreguntas++;
                 $pregunta = new preguntas();
                 $pregunta->pregunta = $preguntaData['texto'];
                 $pregunta->id_examen = $examen->id;
@@ -120,7 +158,8 @@ class ExamenesController extends Controller
                         break;
                 }
         }
-        
+        $examen->cantidadPreguntas=$cantidadPreguntas;
+        $examen->save();
         session()->flash('success','Examen creado con exito');
         return redirect()->route('examenes.index');
 
@@ -135,6 +174,28 @@ class ExamenesController extends Controller
     /**
      * Display the specified resource.
      */
+    public function activar(grupoExamen $grupoExamen){
+        try{
+        $grupoExamen->activo=1;
+        $grupoExamen->save();
+        session()->flash('success','Examen habilitado');}
+        catch(\Exception $e){
+        session()->flash('error','El examen no se pudo habilitar. Intentalo nuevamente');
+        }
+        return redirect()->route('examenes.index');
+
+    }
+    public function desactivar(grupoExamen $grupoExamen){
+        try{
+        $grupoExamen->activo=0;
+        $grupoExamen->save();
+        session()->flash('success','Examen deshabilitado');}
+        catch(\Exception $e){
+        session()->flash('error','El examen no se pudo deshabilitar. Intentalo nuevamente');
+        }
+        return redirect()->route('examenes.index');
+
+    }
     public function show($id)
     {
        $grupos=grupo::all(); 

@@ -172,6 +172,82 @@ function mostrarCamposAdicionales(selectElement, idUnico) {
         
         contenedor.appendChild(nuevaOpcion);
     }
+    // Validación del formulario antes de enviar
+document.querySelector('form').addEventListener('submit', function(e) {
+    if (!validarFormulario()) {
+        e.preventDefault(); // Evita el envío si la validación falla
+    }
+});
+
+function validarFormulario() {
+    // Validar nombre del examen
+    const nombreExamen = document.getElementById('nombre').value.trim();
+    if (!nombreExamen) {
+        alert('Por favor ingresa un nombre para el examen');
+        return false;
+    }
+
+    // Validar selección de grupo
+    const grupoSeleccionado = document.getElementById('underline_select').value;
+    if (grupoSeleccionado === 'Selecciona un grupo') {
+        alert('Por favor selecciona un grupo');
+        return false;
+    }
+
+    // Validar preguntas
+    const preguntas = document.querySelectorAll('.pregunta-group');
+    if (preguntas.length === 0) {
+        alert('Debes agregar al menos una pregunta');
+        return false;
+    }
+
+    // Validar cada pregunta
+    for (const pregunta of preguntas) {
+        const id = pregunta.dataset.id;
+        const textoPregunta = document.querySelector(`input[name="preguntas[${id}][texto]`).value.trim();
+        const tipoPregunta = document.querySelector(`select[name="preguntas[${id}][tipo]"]`).value;
+        
+        // Validar texto de pregunta
+        if (!textoPregunta) {
+            alert(`La pregunta #${id} no tiene texto`);
+            return false;
+        }
+
+        // Validar tipo de pregunta
+        if (!tipoPregunta) {
+            alert(`La pregunta #${id} no tiene tipo seleccionado`);
+            return false;
+        }
+
+        // Validaciones específicas por tipo
+        if (tipoPregunta === 'o') { // Opción múltiple
+            const opciones = document.querySelectorAll(`input[name="preguntas[${id}][respuestas][]"]`);
+            let tieneTexto = true;
+            let tieneCorrecta = false;
+
+            opciones.forEach(opcion => {
+                if (!opcion.value.trim()) {
+                    tieneTexto = false;
+                }
+                if (document.querySelector(`input[name="preguntas[${id}][correcta]"]:checked`)) {
+                    tieneCorrecta = true;
+                }
+            });
+
+            if (!tieneTexto) {
+                alert(`La pregunta #${id} (opción múltiple) tiene opciones sin texto`);
+                return false;
+            }
+
+            if (!tieneCorrecta) {
+                alert(`La pregunta #${id} (opción múltiple) no tiene respuesta correcta seleccionada`);
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
         </script>
     </div>
 </x-layouts.app>
