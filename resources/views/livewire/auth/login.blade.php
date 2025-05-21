@@ -84,60 +84,77 @@ new #[Layout('components.layouts.auth')] class extends Component {
     }
 }; ?>
 
-<div class="flex flex-col gap-6">
-    @if (session('success'))
-        <div class="flex rounded-4xl bg-green-100 text-green-800 p-4 mb-4" id="notification">
-             <p class="flex-9">{{ session('success') }}</p>
-             <flux:button variant="primary" onclick="closeNotification()" class="felx-1" icon="x-mark"></flux:button>
+<div class="min-h-screen flex items-center justify-center from-gray-900 via-gray-800 to-gray-900 p-4">
+    <div class="w-full max-w-md bg-white dark:bg-gray-950 rounded-3xl shadow-lg p-8 text-gray-800 dark:text-gray-100 transition-all">
+
+
+        {{-- Título y descripción --}}
+        <div class="text-center mb-6">
+            <h2 class="text-3xl font-semibold">Inicia sesión en tu cuenta</h2>
+            <p class="text-gray-500 dark:text-gray-400 text-sm mt-1">Accede con tus credenciales institucionales</p>
         </div>
-@endif
-    <x-auth-header :title="('Log in to your account')" :description="('Enter your email and password below to log in')" />
 
-    <!-- Session Status -->
-    <x-auth-session-status class="text-center" :status="session('status')" />
+        {{-- Notificación de éxito --}}
+        @if (session('success'))
+            <div class="flex items-center justify-between bg-green-100 text-green-800 rounded-lg p-4 mb-4" id="notification">
+                <p>{{ session('success') }}</p>
+                <button onclick="closeNotification()" class="text-green-700 hover:text-green-900">
+                    ✕
+                </button>
+            </div>
+        @endif
 
-    <form wire:submit="login" class="flex flex-col gap-6">
-        <!-- Email Address -->
-        <flux:input
-            wire:model="email"
-            :label="('Email address')"
-            type="email"
-            required
-            autofocus
-            autocomplete="email"
-            placeholder="email@example.com"
-        />
+        {{-- Estado de la sesión --}}
+        <x-auth-session-status class="text-center" :status="session('status')" />
 
-        <!-- Password -->
-        <div class="relative">
+        {{-- Formulario --}}
+        <form wire:submit="login" class="flex flex-col gap-5">
+            {{-- Email --}}
             <flux:input
-                wire:model="password"
-                :label="('Password')"
-                type="password"
+                wire:model="email"
+                :label="('Correo electrónico')"
+                type="email"
                 required
-                autocomplete="current-password"
-                :placeholder="('Password')"
+                autofocus
+                autocomplete="email"
+                placeholder="correo@ejemplo.com"
             />
 
-            @if (Route::has('password.request'))
-                <flux:link class="absolute end-0 top-0 text-sm" :href="route('password.request')" wire:navigate>
-                    {{ __('Forgot your password?') }}
-                </flux:link>
-            @endif
-        </div>
+            {{-- Contraseña --}}
+            <div class="relative">
+                <flux:input
+                    wire:model="password"
+                    :label="('Contraseña')"
+                    type="password"
+                    required
+                    autocomplete="current-password"
+                    placeholder="••••••••"
+                />
+                @if (Route::has('password.request'))
+                    <flux:link class="absolute end-0 top-0 text-sm mt-2 text-blue-500 hover:underline" :href="route('password.request')" wire:navigate>
+                        {{ __('¿Olvidaste tu contraseña?') }}
+                    </flux:link>
+                @endif
+            </div>
 
-        <!-- Remember Me -->
-        <flux:checkbox wire:model="remember" :label="('Remember me')" />
+            {{-- Recuérdame --}}
+            <flux:checkbox wire:model="remember" :label="('Recuérdame')" />
 
-        <div class="flex items-center justify-end">
-            <flux:button variant="primary" type="submit" class="w-full">{{ __('Log in') }}</flux:button>
-        </div>
-    </form>
+            {{-- Botón --}}
+            <flux:button variant="primary" type="submit" class="w-full py-3">
+                {{ __('Iniciar sesión') }}
+            </flux:button>
+        </form>
 
- 
-    <script>
-        function closeNotification() {
-            document.getElementById('notification').style.display = 'none';
-        }
-    </script>
+        {{-- Footer institucional --}}
+        <p class="mt-8 text-center text-xs text-gray-500 dark:text-gray-600">
+            © {{ date('Y') }} Universidad XYZ. Todos los derechos reservados.
+        </p>
+
+        <script>
+            function closeNotification() {
+                document.getElementById('notification').style.display = 'none';
+            }
+        </script>
+    </div>
 </div>

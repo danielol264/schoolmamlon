@@ -14,14 +14,21 @@ use Livewire\Volt\Volt;
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
+
+Route::get('/administracion/register', [UserController::class, "register"])
+            ->middleware(['auth','verified'])
+            ->name('administracion.register');
+
+            Route::resource('/user',UserController::class)
+            ->middleware(['auth','verified']);
+
 Route::middleware(['auth', 'verified','rol.admin'])->group(function () {
 
+    
         Route::get('/administracion/actualizarContraseña/{user}', [UserController::class, "actualizarContraseña"])
         ->middleware(['auth','verified'])
         ->name('administracion.actualizarContraseña');   
-        Route::get('/administracion/register', [UserController::class, "register"])
-            ->middleware(['auth','verified'])
-            ->name('administracion.register');   
+           
             Route::resource('administracion/alumnos', AlumnoController::class)
             ->middleware(['auth', 'verified'])
             ->names('administracion.alumnos');
@@ -30,7 +37,11 @@ Route::middleware(['auth', 'verified','rol.admin'])->group(function () {
             ->middleware(['auth', 'verified'])
             ->name('administracion.alumnos.buscar');
 
-        Route::resource('/user',UserController::class)
+        Route::get('/administracion/register', [UserController::class, "register"])
+            ->middleware(['auth','verified'])
+            ->name('administracion.register');
+
+            Route::resource('/user',UserController::class)
             ->middleware(['auth','verified']);
         Route::resource('administracion/maestros', MaestroController::class)
             ->middleware(['auth', 'verified'])

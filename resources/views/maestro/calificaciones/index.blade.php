@@ -1,16 +1,17 @@
 @php
-    use App\Models\Grupo;
-    $grupoMaestro=[];
-    $grupos = Grupo::with('alumnos','examenes')->get();
-    foreach($grupos as $grupo){
-        if($grupo->id_maestro==Auth()->user()->id){
-            $grupoMaestro[$grupo->id]=$grupo;
-        }
-            
-    }
+use App\Models\Grupo;
 
+// Versión optimizada para obtener grupos del maestro con sus relaciones
+$gruposDelMaestro = auth()->user()->maestro->grupos()
+    ->with(['alumnos', 'examenes' => function($query) {
+        $query->select('examenes.id', 'examenes.nombre');
+    }])
+    ->get(['grupos.id', 'grupos.nombre']); // Solo los campos necesarios
+
+// Si necesitas el formato [id => grupo]
+$grupoMaestro = $gruposDelMaestro->keyBy('id');
 @endphp
-<x-layouts.app :title="__('Calificaciones')">
+<x-layouts.app :title="('Calificaciones')">
     <div class="flex h-full w-full flex-1 flex-col gap-4 rounded-xl">
         <!-- Sección de bienvenida -->
        
@@ -20,12 +21,11 @@
             @if($grupoMaestro!=[])
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Lista de exámenes por grupo -->
-
                 <div class="overflow-auto">
                     <h2 class="text-xl font-bold mb-4">Exámenes por Grupo</h2>
                     @foreach($grupoMaestro as $grupo)
                     <div class="mb-8">
-                        <h3 class="text-lg font-semibold mb-2">{{ $grupo->Nombre }}</h3>
+                        <h3 class="text-lg font-semibold mb-2">{{ $grupo->nombre}}</h3>
                         <div class="overflow-x-auto">
                             <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                                 <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -38,7 +38,7 @@
                                     @foreach ($grupo->examenes as $examen)
                                     <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                                         <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                            {{ $examen->Nombre }}
+                                            {{ $examen->nombre }}
                                         </td>
                                         <td class="px-6 py-4">
                                             <form action="{{ route('grupo.examen') }}" method="get">
@@ -66,7 +66,7 @@
                     <div class="mb-6">
                         <button id="dropdownButton-{{ $grupo->id }}" data-dropdown-toggle="dropdown-{{ $grupo->id }}" 
                             class="w-full flex justify-between items-center p-4 text-white bg-blue-700 hover:bg-blue-800 rounded-lg">
-                            <span>{{ $grupo->Nombre }}</span>
+                            <span>{{ $grupo->nombre }}</span>
                             <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                             </svg>

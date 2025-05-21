@@ -32,70 +32,77 @@
     </div>
 
     <!-- Selector de Rol -->
-    <div class="mb-4">
-        <label class="block text-gray-700 text-sm font-bold mb-2" for="ROL">
-            Rol
-        </label>
-        <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
-                id="ROL" name="ROL">
+    <div>
+            <label for="role-select" class="block text-sm font-medium text-gray-700">Rol</label>
+            <select 
+                name="ROL" 
+                id="role-select"
+                class="form-select mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+            >
+            <option value="{{$user->ROL}}">@switch($user->ROL)
+                @case('A')
+                    Alumno
+                    @break
+                @case('M')
+                    Maestro
+                    @break
+                @case('G')
+                    Administrador
+                    @break
+                @default
+                    Rol no definido
+                @endswitch
+            </option>
             <option value="A" {{ $user->ROL == 'A' ? 'selected' : '' }}>Alumno</option>
             <option value="M" {{ $user->ROL == 'M' ? 'selected' : '' }}>Maestro</option>
             <option value="G" {{ $user->ROL == 'G' ? 'selected' : '' }}>Administrador</option>
-        </select>
-    </div>
+           </select>
+        </div>
 
     <!-- Campos condicionales -->
-    @if($user->ROL == 'M')
-        <div class="mb-4">
-            <label class="block text-gray-700 text-sm font-bold mb-2" for="id_maestro">
-                Maestro
-            </label>
-            <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
-                    id="id_maestro" name="id_maestro">
-                    <option value="{{ $user->id_maestro }}" >
-                        {{ $user->maestro->Nombre }} {{ $user->maestro->AP }} {{ $user->maestro->AM }}
-                    </option>
-                @foreach($maestros as $maestro)
-                    <option value="{{ $maestro->id }}" >
-                        {{ $maestro->Nombre }} {{ $maestro->AP }} {{ $maestro->AM }}
-                    </option>
-                @endforeach
-            </select>
-        </div>
-    @endif
+    <div id="role-dependent-section">
+    <!-- Maestro -->
+    <div id="maestro-section" class="hidden">
+                <label for="maestro-select" class="block text-sm font-medium text-gray-700">Maestro</label>
+                <select 
+                    name="id_maestro" 
+                    id="maestro-select"
+                    class="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                >
+                    <option value="">-- Seleccione maestro --</option>
+                    @foreach($maestros as $maestro)
+                        <option value="{{ $maestro->id }}">{{ $maestro->Nombre }}</option>
+                    @endforeach
+                </select>
+    </div>
 
-    @if($user->ROL == 'A')
-        <div class="mb-4">
-            <label class="block text-gray-700 text-sm font-bold mb-2" for="id_alumno">
-                Alumno
-            </label>
-            <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
-                    id="id_alumno" name="id_alumno">
-                    <option value="{{ $user->id_alumno }}" >
-                        {{ $user->alumno->Nombre }} {{ $user->alumno->AP }} {{ $user->alumno->AM }}
-                    </option>
-                @foreach($alumnos as $alumno)
-                    <option value="{{ $alumno->id }}">
-                        {{ $alumno->Nombre }} {{ $alumno->AP }} {{ $alumno->AM }}
-                    </option>
-                @endforeach
-            </select>
-        </div>
+    <!-- Alumno -->
+    <div id="alumno-section" class="hidden">
+    <label for="alumno-select" class="block text-sm font-medium text-gray-700">Alumno</label>
+                <select 
+                    name="id_alumno" 
+                    id="alumno-select"
+                    class="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                >
+                    <option value="">-- Seleccione alumno --</option>
+                    @foreach($alumnos as $alumno)
+                        <option value="{{ $alumno->id }}">{{ $alumno->Nombre }}</option>
+                    @endforeach
+                </select>
 
-        <div class="mb-4">
-            <label class="block text-gray-700 text-sm font-bold mb-2" for="id_grupo">
-                Grupo
-            </label>
-            <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
-                    id="id_grupo" name="id_grupo">
-                @foreach($grupos as $grupo)
-                    <option value="{{ $grupo->id }}" {{ $user->id_grupo == $grupo->id ? 'selected' : '' }}>
-                        {{ $grupo->Nombre }}
-                    </option>
-                @endforeach
-            </select>
-        </div>
-    @endif
+                <label for="grupo-select" class="block mt-4 text-sm font-medium text-gray-700">Grupo</label>
+                <select 
+                    name="id_grupo" 
+                    id="grupo-select"
+                    class="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                >
+                    <option value="">-- Seleccione grupo --</option>
+                    @foreach($grupos as $grupo)
+                        <option value="{{ $grupo->id }}">{{ $grupo->Nombre }}</option>
+                    @endforeach
+                </select>
+    </div>
+</div>
 
     <!-- Botón de envío -->
     <div class="flex items-center justify-between">
@@ -111,14 +118,14 @@
             <form action="{{route('administracion.actualizarContraseña',$user)}}" class="mt-6 space-y-6">
             <flux:input
                 wire:model="password"
-                :label="__('New password')"
+                :label="('New password')"
                 type="password"
                 required
                 autocomplete="new-password"
             />
             <flux:input
                 wire:model="password_confirmation"
-                :label="__('Confirm Password')"
+                :label="('Confirm Password')"
                 type="password"
                 required
                 autocomplete="new-password"
@@ -135,4 +142,74 @@
             </div>
         </div>
     </div>
+    <script>
+        function closeNotification() {
+            document.getElementById('notification').style.display = 'none';
+        }
+      function validate() {
+            const role = document.getElementById('role-select').value;
+            const texto = document.getElementById('texto');
+            const notification = document.getElementById('notification');
+            if (!role) {
+                texto.innerText = 'Por favor selecciona un rol.';
+                notification.classList.remove('hidden');
+                notification.classList.add('flex');
+                return false;
+            }
+
+            if (role === 'A') {
+                const alumno = document.getElementById('alumno-select').value;
+                const grupo = document.getElementById('grupo-select').value;
+                
+                if (!alumno) {
+                    texto.innerText = 'Por favor selecciona un alumno.';
+                    notification.classList.remove('hidden');
+                    notification.classList.add('flex');
+                    return false;
+                }
+                if (!grupo) {
+                    texto.innerText = 'Por favor selecciona un grupo.';
+                    notification.classList.remove('hidden');
+                    notification.classList.add('flex'); 
+                    return false;
+                }
+            } 
+            else if (role === 'M') {
+                const maestro = document.getElementById('maestro-select').value;
+                if (!maestro) {
+                    texto.innerText = 'Por favor selecciona un maestro.';
+                    notification.classList.remove('hidden');
+                    notification.classList.add('flex');
+                    return false;
+                }
+            }
+
+            return true;
+        }
+    document.addEventListener('DOMContentLoaded', function () {
+        const roleSelect = document.getElementById('role-select');
+        const alumnoSection = document.getElementById('alumno-section');
+        const maestroSection = document.getElementById('maestro-section');
+
+        function toggleRoleSections(role) {
+            alumnoSection.classList.add('hidden');
+            maestroSection.classList.add('hidden');
+
+            if (role === 'A') {
+                alumnoSection.classList.remove('hidden');
+            } else if (role === 'M') {
+                maestroSection.classList.remove('hidden');
+            }
+        }
+
+        // Lógica para actualización inicial
+        toggleRoleSections(roleSelect.value);
+
+        // Evento cuando se cambia el rol
+        roleSelect.addEventListener('change', function () {
+            toggleRoleSections(this.value);
+        });
+    });
+</script>
+
 </x-layouts.app>

@@ -48,7 +48,7 @@
                 
                 <div id="contenedor-preguntas" class="mb-8">
     @foreach ($preguntas as $index => $pregunta)
-        <div class="pregunta-group bg-gray-800 p-4 rounded-lg mb-4 border border-gray-200" data-id="{{ $pregunta->id }}">
+        <div class="pregunta-group bg-gray-50 p-4 rounded-lg mb-4 border border-gray-200" data-id="{{ $pregunta->id }}">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="font-bold text-lg">Pregunta #{{ $index + 1 }}</h3>
                 <a href="{{route('preguntas.destroy',$pregunta)}}" type="button" onclick="eliminarPregunta(this)" 

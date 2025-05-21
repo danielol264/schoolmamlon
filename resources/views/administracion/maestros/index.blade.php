@@ -69,7 +69,7 @@
                             <td class="px-6 py-4 font-medium text-gray-900 dark:text-white">{{ $maestro->id }}</td>
                             <td class="px-6 py-4">
                                 <div class="font-medium text-gray-900 dark:text-white">{{ $maestro->AP }} {{ $maestro->AM }}</div>
-                                <div class="text-sm text-gray-500">{{ $maestro->nombre }}</div>
+                                <div class="text-sm text-gray-500">{{ $maestro->Nombre }}</div>
                             </td>
                             <td class="px-6 py-4 font-mono">
                                 <a href="{{ route('administracion.maestros.show', $maestro) }}" class="text-blue-600 hover:underline dark:text-blue-400">

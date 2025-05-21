@@ -60,8 +60,8 @@ class UserController extends Controller
             $rules['id_grupo'] = 'required|integer';
         } elseif ($request->ROL === 'M') {
             $rules['id_maestro'] = 'required|integer';
-        }
-    
+           
+        } 
         // Ejecutar validación
         $validatedData = $request->validate($rules);
     

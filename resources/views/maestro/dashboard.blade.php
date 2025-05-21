@@ -1,68 +1,67 @@
-@php
-    $gruposConExamenes = auth()->user()->maestro->grupos()->with('examenes')->get();
-@endphp
+<x-layouts.app :title="__('Menú del Maestro')">
+    @php
+        $gruposConExamenes = auth()->user()->maestro->grupos()->with('examenes')->get();
+    @endphp
 
-<x-layouts.app :title="__('Menu Del Maestro')">
+    <div class="px-4 py-8 space-y-6">
+        <h1 class="text-4xl font-bold text-gray-800 dark:text-white text-center mb-6">📚 Bienvenido, {{ auth()->user()->maestro->Nombre }}</h1>
 
-    <div class="flex h-full w-full flex-1 flex-col gap-4 rounded-xl">
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>  
-
-        <div class="flex auto-rows-min gap-4 md:felx">
-            <div class="felx-1 h-40 relative aspect-video overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700">
-                <h1>joto el que se llame {{auth()->user()->name}}</h1>
+        <div class="grid md:grid-cols-2 gap-6">
+            {{-- Información del maestro --}}
+            <div class="bg-white dark:bg-gray-800 shadow-lg rounded-2xl p-6 border border-gray-200 dark:border-gray-700">
+                <h2 class="text-2xl font-semibold text-blue-600 dark:text-blue-400 mb-4">👨‍🏫 Información del Maestro</h2>
+                <div class="grid sm:grid-cols-2 gap-4 text-sm">
+                    <div>
+                        <p class="text-gray-500 dark:text-gray-400">Nombre</p>
+                        <p class="text-gray-900 dark:text-white font-medium">{{ auth()->user()->maestro->Nombre }}</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-500 dark:text-gray-400">Apellidos</p>
+                        <p class="text-gray-900 dark:text-white font-medium">{{ auth()->user()->maestro->AP }} {{ auth()->user()->maestro->AM }}</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-500 dark:text-gray-400">Fecha de Ingreso</p>
+                        <p class="text-gray-900 dark:text-white font-medium">{{ auth()->user()->maestro->FI }}</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-500 dark:text-gray-400">Cédula</p>
+                        <p class="text-gray-900 dark:text-white font-medium">{{ auth()->user()->maestro->CEDULA }}</p>
+                    </div>
+                </div>
             </div>
-            <div class="flex-1 h-40 relative aspect-video overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700">
-                <br>
-                <form class="max-w-md mx-auto">
-                <div class="grid md:grid-cols-2 md:gap-6">
-                    <div class="relative z-0 w-full mb-5 group">
-                        <input type="text" name="floating_first_name" id="floating_first_name" class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required disabled="true" value="{{ auth()->user()->maestro->Nombre }}" />
-                        <label for="floating_first_name" class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6" >Nombre </label>
-                    </div>
-                    <div class="relative z-0 w-full mb-5 group">
-                        <input type="text" name="floating_last_name" id="floating_last_name" class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required  disabled="true" value="{{ auth()->user()->maestro->AP }} {{ auth()->user()->maestro->AM }}"  />
-                        <label for="floating_last_name" class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Apellidos</label>
-                    </div>
-                </div>
-                <div class="grid md:grid-cols-2 md:gap-6">
-                    <div class="relative z-0 w-full mb-5 group">
-                        <input type="tel" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" name="floating_phone" id="floating_phone" class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required  disabled="true" value="{{ auth()->user()->maestro->FI }}"  />
-                        <label for="floating_phone" class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Fecha de ingreso</label>
-                    </div>
-                    <div class="relative z-0 w-full mb-5 group">
-                        <input type="text" name="floating_company" id="floating_company" class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required  disabled="true" value="{{ auth()->user()->maestro->CEDULA }}" />
-                        <label for="floating_company" class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Cedula</label>
-                    </div>
-                </div>
-            </form>
 
-            </div>
-        </div>
-        <div class="relative h-full flex-1 overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700">
-           @foreach ($gruposConExamenes as $grupo)
-                <div class="mb-6 p-4 bg-gray-900 rounded-lg">
-                    <button id="dropdownDefaultButton-{{ $grupo->id }}" data-dropdown-toggle="dropdown-{{ $grupo->id }}" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">{{ $grupo->Nombre }} <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
-                    </svg>
-                    </button>
-                    <div id="dropdown-{{ $grupo->id }}" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-gray-700">
-                        <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">
-                        <li>
-                            <span class="block px-4 py-2 font-semibold text-gray-400">Exámenes:</span>
-                        </li>
-                        @foreach ($grupo->examenes as $examen)
-                        <li>
-                            <a href="{{ route('examenes.show',$examen->id) }}"
-                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                                {{ $examen->Nombre }}
-                            </a>
-                        </li>
-                        @endforeach
-                        </ul>
+            {{-- Panel dinámico de grupos --}}
+            <div class="bg-white dark:bg-gray-800 shadow-lg rounded-2xl p-6 border border-gray-200 dark:border-gray-700">
+                <h2 class="text-2xl font-semibold text-blue-600 dark:text-blue-400 mb-4">🧑‍💼 Grupos y Exámenes</h2>
+                @foreach ($gruposConExamenes as $grupo)
+                    <div class="mb-4">
+                        <button id="dropdown-button-{{ $grupo->id }}" data-dropdown-toggle="dropdown-{{ $grupo->id }}" type="button"
+                            class="w-full text-left px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition-all flex justify-between items-center">
+                            {{ $grupo->Nombre }}
+                            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
+                        <div id="dropdown-{{ $grupo->id }}" class="hidden mt-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 shadow-sm">
+                            <ul class="text-sm text-gray-700 dark:text-gray-200 divide-y divide-gray-200 dark:divide-gray-700">
+                                @forelse ($grupo->examenes as $examen)
+                                    <li>
+                                        <a href="{{ route('examenes.show', $examen->id) }}"
+                                           class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition">
+                                            📄 {{ $examen->Nombre }}
+                                        </a>
+                                    </li>
+                                @empty
+                                    <li class="px-4 py-2 text-gray-400 italic">No hay exámenes registrados</li>
+                                @endforelse
+                            </ul>
+                        </div>
                     </div>
-                </div>
-            @endforeach
+                @endforeach
+            </div>
         </div>
     </div>
-    
+
+    {{-- Flowbite Script --}}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
 </x-layouts.app>
