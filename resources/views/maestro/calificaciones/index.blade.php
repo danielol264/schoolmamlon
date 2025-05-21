@@ -10,21 +10,17 @@
     }
 
 @endphp
-<x-layouts.app :title="__('Dashboard')">
+<x-layouts.app :title="__('Calificaciones')">
     <div class="flex h-full w-full flex-1 flex-col gap-4 rounded-xl">
         <!-- Sección de bienvenida -->
-        <div class="grid auto-rows-min gap-4 md:grid-cols-3">
-            <div class="relative aspect-video overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700"></div>
-            <div class="relative aspect-video overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700"></div>
-            <div class="relative aspect-video overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700 flex items-center justify-center">
-                <span class="text-lg font-medium">Bienvenido, {{ Auth()->user()->name }}</span>
-            </div>
-        </div>
+       
 
         <!-- Sección principal de grupos -->
         <div class="relative h-full flex-1 overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700 p-4">
+            @if($grupoMaestro!=[])
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Lista de exámenes por grupo -->
+
                 <div class="overflow-auto">
                     <h2 class="text-xl font-bold mb-4">Exámenes por Grupo</h2>
                     @foreach($grupoMaestro as $grupo)
@@ -97,6 +93,11 @@
                     @endforeach
                 </div>
             </div>
+            @else
+            <div colspan="5" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
+                No hay grupos registrados
+            </div>
+            @endif
         </div>
     </div>
 </x-layouts.app>

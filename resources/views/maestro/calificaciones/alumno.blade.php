@@ -1,4 +1,4 @@
-<x-layouts.app :title="__('Dashboard')">
+<x-layouts.app :title="__('Alumnos')">
     <div>
         <span class="text-xl font-bold">
             {{ $alumno->Nombre }} {{ $alumno->AP }} {{ $alumno->AM }}

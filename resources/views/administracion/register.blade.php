@@ -1,72 +1,3 @@
-<?php
-use App\Models\User;
-use Illuminate\Auth\Events\Registered;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules;
-use Livewire\Attributes\Layout;
-use Livewire\Volt\Component;
-
-new #[Layout('components.layouts.auth')] class extends Component {
-    public string $name = '';
-    public string $email = '';
-    public string $password = '';
-    public string $password_confirmation = '';
-    public string $ROL = '';
-    public ?int $id_grupo = null;
-    public ?int $id_maestro = null;
-    public ?int $id_alumno = null;
-    /**
-     * Handle an incoming registration request.
-     */
-    protected function rules()
-    {
-        $baseRules = [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'unique:users'],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'ROL' => ['required', 'in:A,M,G'], 
-        ];
-        if ($this->ROL === 'A') { 
-            $baseRules['id_grupo'] = ['required', 'integer'];
-            $baseRules['id_alumno'] = ['required', 'integer'];
-        } elseif ($this->ROL === 'M') { 
-            $baseRules['id_maestro'] = ['required', 'integer'];
-        }
-        return $baseRules;
-    }
-     public function register()
-{
-    $validated = $this->validate();
-
-    $validated['password'] = Hash::make($validated['password']);
-    
-    $rolTexto = match($validated['ROL']) {
-        'A' => 'Alumno',
-        'M' => 'Maestro',
-        'G' => 'Administrador',
-    };
-
-    try {
-        $user = User::create([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'password' => $validated['password'],
-            'ROL' => $validated['ROL'],
-            'id_grupo' => $validated['id_grupo'] ?? null,
-            'id_alumno' => $validated['id_alumno'] ?? null,
-            'id_maestro' => $validated['id_maestro'] ?? null,
-        ]);
-
-        session()->flash('success', "Registro exitoso! (Rol: $rolTexto). Por favor inicia sesión.");
-        return redirect()->route('administracion.dashboard');
-    } catch (\Exception $e) {
-        session()->flash('error', "Error al registrar el $rolTexto ");
-        return redirect()->route('register');
-    }
-}
-}
- ?>
 <x-layouts.app title="Registrar">
     
 <div class="flex flex-col gap-6">
@@ -80,13 +11,14 @@ new #[Layout('components.layouts.auth')] class extends Component {
              <p class="flex-9" id="texto"></p>
              <flux:button variant="primary" onclick="closeNotification()" class="felx-1" icon="x-mark"></flux:button>
         </div>
-    <x-auth-header :title="('Create an account')" :description="('Enter your details below to create your account')" />
+    <x-auth-header :title="('Crea una cuenta')" :description="('Escribe todos los detalles de la cuenta, proporciona las credenciales al usuario ')" />
 
     <!-- Session Status -->
     <x-auth-session-status class="text-center" :status="session('status')" />
 
-    <form wire:submit="register"  onsubmit="return validate()" class="flex flex-col gap-6">
-        <!-- Name -->
+    <form action="{{route('user.store')}}"  onsubmit="return validate()" method="post" class="flex flex-col gap-6">
+        @csrf
+        @method('POST')
         <flux:input
             wire:model="name"
             :label="('Name')"
@@ -192,10 +124,7 @@ new #[Layout('components.layouts.auth')] class extends Component {
         </div>
     </form>
 
-    <div class="space-x-1 rtl:space-x-reverse text-center text-sm text-zinc-600 dark:text-zinc-400">
-        {{ __('Already have an account?') }}
-        <flux:link :href="route('login')" wire:navigate>{{ __('Log in') }}</flux:link>
-    </div>
+   
     <script>
         function closeNotification() {
             document.getElementById('notification').style.display = 'none';

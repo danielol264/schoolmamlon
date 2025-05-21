@@ -11,15 +11,13 @@ class CheckMaestro
 {
     /**
      * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-   // app/Http/Middleware/CheckMaestro.php
-    public function handle(Request $request, Closure $next)
+    public function handle($request, Closure $next)
     {
-    if (auth::check() && auth::user()->rol === 'M') {
-        return $next($request);
-    }
-    abort(403, 'Acceso no autorizado');
+        if (Auth::check() && Auth::user()->ROL === 'M') {
+            return $next($request);
+        }
+
+        abort(403, 'Acceso no autorizado. Solo maestros.');
     }
 }

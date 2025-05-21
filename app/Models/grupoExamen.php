@@ -11,7 +11,7 @@ public function examen()
     {
         return $this->belongsTo(examenes::class, 'id_examen'); // Filtro adicional por si acaso
     }
-    public function grupos(){
+    public function grupo(){
         return $this->belongsToMany(grupo::class,'id_grupo');
     }
 }

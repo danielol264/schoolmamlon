@@ -28,8 +28,8 @@
             </div>
         </div>
         <div class="relative h-full flex-1 overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700">
-            
-        <table id="search-table">
+         @if(!$examenes->isEmpty())
+                <table id="search-table">
             <thead>
                 <tr>
                     <th>
@@ -64,7 +64,7 @@
                     <tr>
                         <td> {{$examen->id}}</td>
                         <td class="font-medium text-gray-900 whitespace-nowrap dark:text-white">{{$examen->Nombre}}</td>
-                        <td>{{$examen->grupo}}</td>
+                        <td>{{$examen->grupos->first()->Nombre}}</td>
                         <td>{{$examen->maestro->Nombre}}</td>
                         <td></td>
                         <td class="flex gap-2">
@@ -81,7 +81,11 @@
                     
             </tbody>
         </table>
-
+        @else
+            <div colspan="5" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
+                No hay alumnos registrados
+            </div>
+        @endif
 
         </div>
     </div>

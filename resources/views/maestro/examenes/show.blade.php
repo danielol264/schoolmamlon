@@ -1,4 +1,4 @@
-    <x-layouts.app :title="__('Dashboard')">
+    <x-layouts.app :title="__('Examen')">
         <div class="flex h-full w-full flex-1 flex-col gap-4 rounded-xl">
             
             <div class="grid auto-rows-min h-40 gap-4 ">
@@ -15,12 +15,7 @@
                 @endif
                 <div class="relative aspect-video overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700">
                     <flux:input label="Nombre del examen" value="{{ $examen->Nombre }}" disabled/>
-                    <flux:select disabled>
-                        <flux:select.option >{{$grupo->grupo}}</flux:select.option>
-                        @foreach ($grupos as $grupo)
-                            <flux:select.option value="{{ $grupo->id }}">{{$grupo->Nombre}}</flux:select.option>
-                        @endforeach
-                    </flux:select>
+
 
                 </div>
             </div>

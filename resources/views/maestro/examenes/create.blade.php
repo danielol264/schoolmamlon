@@ -1,4 +1,4 @@
-<x-layouts.app title="Usuarios">
+<x-layouts.app title="Crear Examen">
     @if (session()->has("mensaje"))
         <script>
             alert("{{ session()->get('mensaje') }}");
